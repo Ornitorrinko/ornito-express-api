@@ -1,0 +1,18 @@
+{
+  "name": "ornitojs",
+  "version": "1.0.0",
+  "description": "A command-line tool for creating api structure",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ornito",
+  "license": "ISC",
+  "bin": {
+    "ornito": "./index.js"
+  },
+  "dependencies": {
+    "commander": "^2.11.0",
+    "prompt": "^1.0.0"
+  }
+}
