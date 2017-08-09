@@ -6,6 +6,8 @@ const sortedObject = require('sorted-object')
 const ncp = require('ncp').ncp
 const fs = require('fs')
 const mkdirp = require('mkdirp')
+const inquirer = require('inquirer')
+const ejs = require('ejs')
 
 const MODE_0666 = parseInt('0666', 8)
 const MODE_0755 = parseInt('0755', 8)
@@ -17,6 +19,11 @@ const version = pkg.version
 
 let WORKING_DIR = null
 
+let config = {
+  useMongodb: true,
+  useEslint: false,
+  useIugu: false
+}
 ncp.limit = 16
 
 program
@@ -65,6 +72,26 @@ function createRoute (route, option) {
   
 }
 
+function askForEslint (fn) {
+  let question = {
+    type: 'confirm',
+    name: 'useEslint',
+    message: 'Do you want to use ESLint?',
+    default: false
+  }
+  return inquirer.prompt(question)
+}
+
+function askForMongodb () {
+  let question = {
+    type: 'confirm',
+    name: 'useMongodb',
+    message: 'Do you want to use Mongodb to store anything?',
+    default: true
+  }
+  return inquirer.prompt(question)
+}
+
 function main (projectFolder) {
   // Path
   let destinationPath = projectFolder || '.'
@@ -75,9 +102,18 @@ function main (projectFolder) {
   // Generate application
   let empty = emptyDirectory(destinationPath)
 
-  if (empty || program.force) {
-    createApplication(appName, destinationPath)
-  }
+  // start asking for eslint, database and set config on server.js
+  askForMongodb().then(answer => {
+    config.useMongodb = answer.useMongodb
+    let server = loadTemplate('server.js')
+    server.locals.config = config
+    const origin = path.join(__dirname, '/structure/src')
+    write(`${origin}/server.js`, server.render())
+
+    if (empty || program.force) {
+      createApplication(appName, destinationPath)
+    }
+  })
 }
 
 function createApplication (name, newPath) {
@@ -100,26 +136,27 @@ function createApplication (name, newPath) {
           test: 'node ./test/server.js'
         },
         dependencies: {
+          "bcrypt-nodejs": "0.0.3",
           "body-parser": "~1.17.1",
           "cookie-parser": "~1.4.3",
-          "debug": "~2.6.3",
-          "express": "~4.15.2",
-          "morgan": "~1.8.1",
-          "serve-favicon": "~2.4.2",
           "cors": "^2.7.1",
           "cron": "^1.1.0",
+          "debug": "~2.6.3",
           "express": "4.13.3",
           "express-logger": "0.0.3",
           "express-session": "^1.14.2",
+          "jsonwebtoken": "^7.4.2",
           "knex": "^0.8.6",
           "lodash": "^4.16.1",
           "moment": "^2.14.1",
           "mongoose": "^4.8.5",
-          "shortid": "^2.2.6",
-          "slug": "^0.9.1",
-          "bcrypt-nodejs": "0.0.3",
+          "morgan": "~1.8.1",
           "numeral": "^1.5.3",
+          "ornito-route-handler": "^1.0.3",
           "randomstring": "^1.1.5",
+          "serve-favicon": "~2.4.2",
+          "shortid": "^2.2.6",
+          "slug": "^0.9.1"
         }
       }
 
@@ -181,7 +218,7 @@ function emptyDirectory (path) {
 }
 
 function loadTemplate (name) {
-  var contents = fs.readFileSync(path.join(__dirname, '..', 'templates', (name + '.pug')), 'utf-8')
+  var contents = fs.readFileSync(path.join(__dirname, 'templates', `${name}.ejs`), 'utf-8')
   var locals = Object.create(null)
 
   function render () {
@@ -189,13 +226,13 @@ function loadTemplate (name) {
   }
 
   return {
-    locals: locals,
-    render: render
+    locals,
+    render
   }
 }
 
 function copyTemplate (from, to) {
-  from = path.join(__dirname, '..', 'templates', from)
+  from = path.join(__dirname, 'templates', from)
   write(to, fs.readFileSync(from, 'utf-8'))
 }
 

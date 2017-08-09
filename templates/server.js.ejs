@@ -5,11 +5,11 @@ const bodyParser = require('body-parser')
 const Cron = require('./backgroundTasks')
 const { adminMiddleware } = require('./auth/authorization')
 const { routes, adminRoutes } = require('./router')
-
-
+<% if (config.useMongodb) { -%>
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/ornitoapi', { useMongoClient: true })
 
+mongoose.connect('mongodb://localhost/ornitoapi', { useMongoClient: true })
+<% } -%>
 
 const handler = require('ornito-route-handler')({
   version: '1.0',

@@ -1,6 +1,6 @@
 const CronJob = require('cron').CronJob
 
-export default class Cron {
+module.exports = class Cron {
   constructor () {
     this._jobs = []
   }

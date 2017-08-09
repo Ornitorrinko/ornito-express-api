@@ -4,8 +4,8 @@ const path = require('path')
 
 const basePath = path.join(__dirname, '/routes')
 
-export const routes = _.compact(getFiles())
-export const adminRoutes = _.compact(getFiles('admin'))
+exports.routes = _.compact(getFiles())
+exports.adminRoutes = _.compact(getFiles('admin'))
 
 function getFiles (level) {
   if (!level) level = ''
