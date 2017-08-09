@@ -82,8 +82,8 @@ function main (projectFolder) {
 
 function createApplication (name, newPath) {
   mkdir(newPath, () => {
-    // copy recursively the template files to destination folder
-    const origin = path.join(__dirname, '/templates')
+    // copy recursively the structure files to destination folder
+    const origin = path.join(__dirname, '/structure')
     ncp(origin, newPath, (err) => {
       if (err) {
         return console.error(err)
