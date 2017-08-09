@@ -2,6 +2,10 @@
 const program = require('commander')
 const prompt = require('prompt')
 const path = require('path')
+const sortedObject = require('sorted-object')
+const ncp = require('ncp').ncp
+const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 const MODE_0666 = parseInt('0666', 8)
 const MODE_0755 = parseInt('0755', 8)
@@ -12,6 +16,8 @@ const pkg = require('./package.json')
 const version = pkg.version
 
 let WORKING_DIR = null
+
+ncp.limit = 16
 
 program
   .version(version, '--version')
@@ -28,11 +34,30 @@ program
   .option('-l, --level [name]', 'Which level this route should be created, eg: admin superadmin')
   .action(createRoute)
 
+program
+  .command('service [name]')
+  .description('create service with the specified name')
+  .action(createRoute)
+
+program
+  .command('model [name]')
+  .description('create model with the specified name')
+  .action(createRoute)
+
+program
+  .command('persistence [name]')
+  .description('create persistence file with the specified name')
+  .action(createRoute)
+
+program
+  .command('job [name]')
+  .description('create job with the specified name and http methods')
+  .action(createRoute)
+
 
 program.parse(process.argv)
 
 function createArchitecture (option) {
-  console.log(option.dir)
   main(option.dir)
 }
  
@@ -42,95 +67,80 @@ function createRoute (route, option) {
 
 function main (projectFolder) {
   // Path
-  var destinationPath = projectFolder || '.'
+  let destinationPath = projectFolder || '.'
 
   // App name
-  var appName = createAppName(path.resolve(destinationPath)) || 'hello-ornito-api'
+  let appName = createAppName(path.resolve(destinationPath)) || 'hello-ornito-api'
 
   // Generate application
-  emptyDirectory(destinationPath, (empty) => {
-    if (empty || program.force) {
-      createApplication(appName, destinationPath)
-    }
-  })
+  let empty = emptyDirectory(destinationPath)
+
+  if (empty || program.force) {
+    createApplication(appName, destinationPath)
+  }
 }
 
-function createApplication (name, path) {
-  var wait = 5
-
-  console.log()
-  function complete () {
-    if (--wait) return
-    var prompt = launchedFromCmd() ? '>' : '$'
-
-    console.log()
-    console.log('   install dependencies:')
-    console.log('     %s cd %s && npm install', prompt, path)
-    console.log()
-    console.log('   run the app:')
-
-    if (launchedFromCmd()) {
-      console.log('     %s SET DEBUG=%s:* & npm start', prompt, name)
-    } else {
-      console.log('     %s DEBUG=%s:* npm start', prompt, name)
-    }
-
-    console.log()
-  }
-
-  // JavaScript
-  var app = loadTemplate('js/app.js')
-  var www = loadTemplate('js/www')
-
-  // App name
-  www.locals.name = name
-
-  // App modules
-  app.locals.modules = Object.create(null)
-  app.locals.uses = []
-
-  mkdir(path, function () {
-
-    mkdir(path + '/routes', function () {
-      copyTemplate('js/routes/index.js', path + '/routes/index.js')
-      copyTemplate('js/routes/users.js', path + '/routes/users.js')
-      complete()
-    })
-
-    // package.json
-    var pkg = {
-      name: name,
-      version: '0.0.0',
-      private: true,
-      scripts: {
-        start: 'node ./src/server.js'
-      },
-      dependencies: {
-        'body-parser': '~1.17.1',
-        'cookie-parser': '~1.4.3',
-        'debug': '~2.6.3',
-        'express': '~4.15.2',
-        'morgan': '~1.8.1',
-        'serve-favicon': '~2.4.2'
+function createApplication (name, newPath) {
+  mkdir(newPath, () => {
+    // copy recursively the template files to destination folder
+    const origin = path.join(__dirname, '/templates')
+    ncp(origin, newPath, (err) => {
+      if (err) {
+        return console.error(err)
       }
-    }
+      console.log('   \x1b[36mcreated structure files\x1b[0m')
 
-    // sort dependencies like npm(1)
-    pkg.dependencies = sortedObject(pkg.dependencies)
+      // package.json
+      const pkg = {
+        name: name,
+        version: '0.0.0',
+        private: true,
+        scripts: {
+          start: 'node ./src/server.js',
+          test: 'node ./test/server.js'
+        },
+        dependencies: {
+          "body-parser": "~1.17.1",
+          "cookie-parser": "~1.4.3",
+          "debug": "~2.6.3",
+          "express": "~4.15.2",
+          "morgan": "~1.8.1",
+          "serve-favicon": "~2.4.2",
+          "cors": "^2.7.1",
+          "cron": "^1.1.0",
+          "express": "4.13.3",
+          "express-logger": "0.0.3",
+          "express-session": "^1.14.2",
+          "knex": "^0.8.6",
+          "lodash": "^4.16.1",
+          "moment": "^2.14.1",
+          "mongoose": "^4.8.5",
+          "shortid": "^2.2.6",
+          "slug": "^0.9.1",
+          "bcrypt-nodejs": "0.0.3",
+          "numeral": "^1.5.3",
+          "randomstring": "^1.1.5",
+        }
+      }
 
-    // write files
-    write(path + '/package.json', JSON.stringify(pkg, null, 2) + '\n')
-    write(path + '/app.js', app.render())
-    mkdir(path + '/bin', function () {
-      write(path + '/bin/www', www.render(), MODE_0755)
-      complete()
+      // sort dependencies like npm(1)
+      pkg.dependencies = sortedObject(pkg.dependencies)
+
+      // write files
+      write(newPath + '/package.json', JSON.stringify(pkg, null, 2) + '\n')
+
+      if (program.git) {
+        copyTemplate('js/gitignore', newPath + '/.gitignore')
+      }
+
+      console.log()
+      console.log('   install dependencies:')
+      console.log('     %s cd %s && npm install', '$', newPath)
+      console.log()
+      console.log('   run the app:')
+      console.log('     %s DEBUG=%s npm start', '$', name)
+      console.log()
     })
-
-    if (program.git) {
-      copyTemplate('js/gitignore', path + '/.gitignore')
-    }
-
-    complete()
   })
 }
 
@@ -162,11 +172,12 @@ function createAppName (pathName) {
  * @param {Function} fn
  */
 
-function emptyDirectory (path, fn) {
-  fs.readdir(path, function (err, files) {
-    if (err && err.code !== 'ENOENT') throw err
-    fn(!files || !files.length)
-  })
+function emptyDirectory (path) {
+  if (!fs.existsSync(path)) {
+    return true
+  }
+  let files = fs.readdirSync(path)
+  return !files && !files.length
 }
 
 function loadTemplate (name) {

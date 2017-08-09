@@ -1,0 +1,15 @@
+{
+  "db_host": "",
+  "SENDGRID_API_KEY": "",
+  "iugu": {
+    "url": "https://api.iugu.com/v1/",
+    "api_key": "",
+    "api_token": ""
+  },
+  "cloudinary": {
+    "cloud_name": "",
+    "api_key": "",
+    "api_secret": "",
+    "env_variable": ""
+  }
+}
