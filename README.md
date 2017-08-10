@@ -19,12 +19,18 @@ npm install -g ornitojs
 ornito start --dir yourprojectname
 ```
 
-## Creating a new module
+### Creating a new module
 ``` shell
 ornito module user
 ```
 
-## Creating a new service
+### Creating a new service
 ``` shell
 ornito service auth
 ```
+
+### 💡 To do:
+
+* create database if does not exist (node-postgres)
+* show eslint options (standard, standard2, airbnb...)
+* create structure with tests configured using jest
