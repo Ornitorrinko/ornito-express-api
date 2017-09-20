@@ -24,13 +24,11 @@ ornito start
 ornito module user
 ```
 
-### Creating a new service
-``` shell
-ornito service auth
-```
-
 ### 💡 To do:
 
 * create database if does not exist (node-postgres)
 * show eslint options (standard, standard2, airbnb...)
-* create structure with tests configured using jest
+* tests using jest
+* create job from CLI
+* create module from CLI
+* option to inform database settings while creating structure
