@@ -1,16 +1,24 @@
-import numeral from 'numeral'
-import shortid from 'shortid'
+const numeral = require('numeral')
+const shortid = require('shortid')
+const bcrypt = require('bcrypt-nodejs')
+const GEN_FACTOR = 10
+const CPF = require('cpf_cnpj').CPF
+const NodeRSA = require('node-rsa')
+const key = new NodeRSA({ b: 512 })
+const uuid = require('uuid')
+const moment = require('moment')
+const config = require(`./config/${process.env.NODE_ENV || 'development'}.json`)
 
-export const config = require(`./config/${process.env.NODE_ENV || 'development'}.json`)
+moment.locale('pt-BR')
 
-export function buildObject (fields, body) {
+function buildObject (fields, body) {
   return fields.reduce((obj, field) => {
     obj[field] = body[field]
     return obj
   }, {})
 }
 
-export function currency (value, currency, decimals) {
+function currency (value, currency, decimals) {
   const digitsRE = /(\d{3})(?=\d)/g
   value = parseFloat(value)
   if (!isFinite(value) || (!value && value !== 0)) return ''
@@ -35,7 +43,7 @@ export function currency (value, currency, decimals) {
     _float
 }
 
-export function formatToCurrencyBr (value) {
+function formatToCurrencyBr (value) {
   numeral.language('pt-br', {
     delimiters: {
       thousands: '.',
@@ -59,7 +67,7 @@ export function formatToCurrencyBr (value) {
   return string
 }
 
-export function renameProperties (mapper, body) {
+function renameProperties (mapper, body) {
   return Object.keys(body).reduce((obj, field) => {
     let prop = mapper[field]
     obj[prop] = body[field]
@@ -67,12 +75,12 @@ export function renameProperties (mapper, body) {
   }, {})
 }
 
-export function onlyNumbers (string) {
+function onlyNumbers (string) {
   var numberPattern = /\d+/g
   return string.match(numberPattern)
 }
 
-export function validate (fields, body, skip) {
+function validate (fields, body, skip) {
   if (skip) {
     fields = fields.filter(field => {
       return skip.indexOf(field) < 0
@@ -84,7 +92,7 @@ export function validate (fields, body, skip) {
   })
 }
 
-export function validateWithDic (fieldsDic, body, skip) {
+function validateWithDic (fieldsDic, body, skip) {
   let fields = Object.keys(fieldsDic).map(k => k)
   let report = validate(fields, body, skip)
   return report.map(r => {
@@ -97,14 +105,14 @@ export function validateWithDic (fieldsDic, body, skip) {
   })
 }
 
-export function exchangeValues (source, to) {
+function exchangeValues (source, to) {
   for (let p of Object.keys(source)) {
     to[p] = source[p]
   }
   return to
 }
 
-export function cleaner (fields, obj) {
+function cleaner (fields, obj) {
   return Object.keys(obj).filter((k) => {
     if (fields.indexOf(k) > -1) {
       return (obj[k])
@@ -115,10 +123,7 @@ export function cleaner (fields, obj) {
   }, {})
 }
 
-const bcrypt = require('bcrypt-nodejs')
-const GEN_FACTOR = 10
-
-export function hashify (value) {
+async function hashify (value) {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(GEN_FACTOR, (err, salt) => {
       if (err) {
@@ -138,15 +143,11 @@ export function hashify (value) {
   })
 }
 
-export function magnoliafy () {
+function eztravelify () {
   return shortid.generate()
 }
 
-export function eztravelify () {
-  return shortid.generate()
-}
-
-export function compareHash (value, hash) {
+function compareHash (value, hash) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(value, hash, (err, res) => {
       if (err) {
@@ -159,49 +160,28 @@ export function compareHash (value, hash) {
   })
 }
 
-const uuid = require('node-uuid')
-export function guid () {
+function guid () {
   return uuid.v1()
 }
 
-const CPF = require('cpf_cnpj').CPF
-export function isValidCPF (value) {
+function isValidCPF (value) {
   return CPF.isValid(value)
 }
 
-export function formatCPF (value) {
+function formatCPF (value) {
   return CPF.format(value)
 }
 
-const NodeRSA = require('node-rsa')
-const key = new NodeRSA({
-  b: 512
-})
-export function toBase64 (value) {
+function toBase64 (value) {
   return key.encrypt(value, 'base64')
 }
 
-const moment = require('moment')
-moment.locale('pt-BR')
-
-export function toSQLDate (value, inputFormat) {
+function toSQLDate (value, inputFormat) {
   let sqlDateFormat = 'YYYY-MM-DD'
   return moment(value, inputFormat).format(sqlDateFormat)
 }
 
-export function toDateObject (value, inputFormat) {
-  return moment(value, inputFormat)
-}
-
-export function dayMonthYear (value) {
-  return moment(value).format('DD/MM/YYYY')
-}
-
-export function isDateEmpty (value) {
-  return (!value) || (value === 'Invalid date')
-}
-
-export function isDate (value) {
+function isDate (value) {
   if (!value) {
     return false
   }
@@ -209,35 +189,31 @@ export function isDate (value) {
   return moment.isDate(new Date(value))
 }
 
-export function replaceAllSpacesWith (text, char) {
+function replaceAllSpacesWith (text, char) {
   return text.replace(/ /g, char)
 }
 
-export function replaceAll (target, search, replacement) {
+function replaceAll (target, search, replacement) {
   return target.split(search).join(replacement)
 }
 
-export function isArray (item) {
-  return (Object.prototype.toString.call(item) === '[object Array]')
-}
-
-export function roundUp (value) {
+function roundUp (value) {
   return Math.round(value * 10) / 10
 }
 
-export function toCents (number) {
+function toCents (number) {
   return (number || 0) * 100
 }
 
-export function stringToCents (number) {
+function stringToCents (number) {
   return parseInt(number.replace('.', ''))
 }
 
-export function maskCreditCardNumber (first, last) {
+function maskCreditCardNumber (first, last) {
   return `${first.substr(0, 4)}********${last}`
 }
 
-export function insertCharInMiddle (value, char) {
+function insertCharInMiddle (value, char) {
   if (!value || !value.length) return value
 
   let parts = value.split('')
@@ -245,7 +221,7 @@ export function insertCharInMiddle (value, char) {
   return parts.join('')
 }
 
-export function zeroIfIsNegative (n, o) {
+function zeroIfIsNegative (n, o) {
   if (n >= o) {
     n = (n - o)
   } else if (n < o) {
@@ -255,10 +231,41 @@ export function zeroIfIsNegative (n, o) {
   return n
 }
 
-export function toBool (str) {
+function toBool (str) {
   if (typeof str !== 'string') {
     return false
   }
 
   return (str.toLowerCase() === 'true')
+}
+
+module.exports = {
+  config,
+  currency,
+  formatToCurrencyBr,
+  renameProperties,
+  onlyNumbers,
+  validate,
+  validateWithDic,
+  exchangeValues,
+  cleaner,
+  hashify,
+  eztravelify,
+  compareHash,
+  guid,
+  isValidCPF,
+  formatCPF,
+  toBase64,
+  toSQLDate,
+  isDate,
+  replaceAllSpacesWith,
+  replaceAll,
+  roundUp,
+  toCents,
+  stringToCents,
+  maskCreditCardNumber,
+  insertCharInMiddle,
+  zeroIfIsNegative,
+  toBool,
+  buildObject
 }

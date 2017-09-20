@@ -1,18 +1,18 @@
-const database = require('./db')
+const database = require('../../persistence/db').knex
 
 module.exports = {
-  insert(person) {
-    return database().knex('users')
+  async insert (person) {
+    return database('users')
       .returning('id')
       .insert(person)
-      .then(id => id)
+      .then(id => id[0])
       .catch(error => {
         console.error(error)
-        throw new Error('Error while inserting user')
+        throw new Error(`Error while inserting user: ${error.constraint}`)
       })
   },
-  get(filter) {
-    return database().knex('users')
+  async get (filter) {
+    return database('users')
       .where(filter)
       .first()
       .then(result => result)

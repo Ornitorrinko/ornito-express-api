@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const program = require('commander')
 const prompt = require('prompt')
 const path = require('path')
@@ -67,9 +68,45 @@ program.parse(process.argv)
 function createArchitecture (option) {
   main(option.dir)
 }
+
+function main (projectFolder) {
+  // Path
+  askForProjectFolder().then(answer => {
+    let destinationPath = answer.projectFolder
+
+    // App name
+    let appName = createAppName(path.resolve(destinationPath))
+
+    // Generate application
+    let empty = emptyDirectory(destinationPath)
+
+    // start asking for eslint, database and set config on server.js
+    askForMongodb().then(answer => {
+      config.useMongodb = answer.useMongodb
+      let server = loadTemplate('server.js')
+      server.locals.config = config
+      const origin = path.join(__dirname, '/structure/src')
+      write(`${origin}/server.js`, server.render())
+
+      if (empty || program.force) {
+        createApplication(appName, destinationPath)
+      }
+    })
+  })
+}
  
 function createRoute (route, option) {
   
+}
+
+function askForProjectFolder () {
+  let question = {
+    type: 'input',
+    name: 'projectFolder',
+    message: 'Please inform the name of the project',
+    default: 'hello-world-ornito'
+  }
+  return inquirer.prompt(question)
 }
 
 function askForEslint (fn) {
@@ -92,30 +129,6 @@ function askForMongodb () {
   return inquirer.prompt(question)
 }
 
-function main (projectFolder) {
-  // Path
-  let destinationPath = projectFolder || '.'
-
-  // App name
-  let appName = createAppName(path.resolve(destinationPath)) || 'hello-ornito-api'
-
-  // Generate application
-  let empty = emptyDirectory(destinationPath)
-
-  // start asking for eslint, database and set config on server.js
-  askForMongodb().then(answer => {
-    config.useMongodb = answer.useMongodb
-    let server = loadTemplate('server.js')
-    server.locals.config = config
-    const origin = path.join(__dirname, '/structure/src')
-    write(`${origin}/server.js`, server.render())
-
-    if (empty || program.force) {
-      createApplication(appName, destinationPath)
-    }
-  })
-}
-
 function createApplication (name, newPath) {
   mkdir(newPath, () => {
     // copy recursively the structure files to destination folder
@@ -132,8 +145,8 @@ function createApplication (name, newPath) {
         version: '0.0.0',
         private: true,
         scripts: {
-          start: 'node ./src/server.js',
-          test: 'node ./test/server.js'
+          start: 'nodemon ./src/server.js',
+          test: "standard './src/**/*.js' --verbose | snazzy"
         },
         dependencies: {
           "bcrypt-nodejs": "0.0.3",
@@ -156,7 +169,16 @@ function createApplication (name, newPath) {
           "randomstring": "^1.1.5",
           "serve-favicon": "~2.4.2",
           "shortid": "^2.2.6",
-          "slug": "^0.9.1"
+          "slug": "^0.9.1",
+          "cpf_cnpj": "^0.2.0",
+          "node-rsa": "^0.4.2",
+          "uuid": "^3.1.0",
+          "pg": "^7.3.0",
+          "pug": "^2.0.0-rc.4",
+        },
+        "devDependencies": {
+          "snazzy": "^7.0.0",
+          "standard": "^10.0.3"
         }
       }
 
@@ -176,6 +198,8 @@ function createApplication (name, newPath) {
       console.log()
       console.log('   run the app:')
       console.log('     %s DEBUG=%s npm start', '$', name)
+      console.log()
+      console.log('   now you need to set the database configuration at ./src/config/development.json')
       console.log()
     })
   })

@@ -2,7 +2,7 @@ const { config } = require('../utils')
 
 console.log(config.db_host)
 
-let knex = require('knex')({
+const knex = require('knex')({
   client: 'pg',
   connection: config.db_host,
   pool: {
@@ -11,4 +11,6 @@ let knex = require('knex')({
   }
 })
 
-export const db = knex
+module.exports = {
+  knex
+}

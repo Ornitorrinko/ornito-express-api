@@ -5,8 +5,7 @@ const _ = require('underscore')
 const path = require('path')
 const { config } = require('../utils')
 
-export default class EmailBuilder {
-
+class EmailBuilder {
   /**
     * @params
     * data: object containing information about the subject
@@ -47,7 +46,7 @@ export default class EmailBuilder {
       personalizations: [
         {
           to: _destinations,
-          subject: SUBJECT
+          subject: ''
         }
       ],
       from: {
@@ -69,3 +68,5 @@ export default class EmailBuilder {
     return statusEmail
   }
 }
+
+module.exports = EmailBuilder

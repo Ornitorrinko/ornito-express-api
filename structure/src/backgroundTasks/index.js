@@ -10,7 +10,7 @@ module.exports = class Cron {
       .filter(job => job.enabled)
       .forEach(job => {
         console.log(`Registering background job: ${job.name}`)
-        new CronJob(job.schedule, () => {
+        return CronJob(job.schedule, () => {
           _run(job)
         }, null, true)
       })

@@ -1,23 +1,27 @@
-const { guid } = require('../utils')
-const moment = require('moment')
+const { guid, hashify } = require('../../utils')
 const persistence = require('./user.persistence')
 
-module.exports = class User {
+class User {
   async get (id) {
-    await persistence.get(id)
+    return persistence.get(id)
   }
 
   async getBy (filter) {
-    await persistence.getBy(filter)
+    return persistence.getBy(filter)
   }
 
   async list (filter) {
-    await persistence.list(filter)
+    return persistence.list(filter)
   }
 
   async create (data) {
     data.id = guid()
     data.created_at = new Date()
-    await persistence.insert(data)
+    data.password = await hashify(data.password)
+    // you're able now to insert to relational database with persistence,
+    // or use mongoose to insert into mongodb
+    return persistence.insert(data)
   }
 }
+
+module.exports = User

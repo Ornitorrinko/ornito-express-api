@@ -1,20 +1,29 @@
-const Validator = require('./user.validation')
 const User = require('./user.model')
+const Schema = require('./user.schema')
 
-exports.create = async (body) => {
-	try {
-		Validator.create(body)
-		const user = await User.create(body)
-		return user
-	} catch (err) {
-		throw err
-	}
+const create = async (body) => {
+  try {
+    Schema.validate(body)
+    const user = new User()
+    const result = await user.create(body)
+
+    return { id: result }
+  } catch (err) {
+    console.log('err', err)
+    throw err
+  }
 }
 
-exports.get = async (id) => {
+const get = async (id) => {
 
 }
 
-exports.update = async (id, body) => {
-  
+const update = async (id, body) => {
+
+}
+
+module.exports = {
+  create,
+  get,
+  update
 }

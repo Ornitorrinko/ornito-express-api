@@ -33,8 +33,8 @@ const port = process.env.PORT || 3000
 const activateJobs = process.env.JOBS || false
 const server = http.createServer(app)
 
-app.use('/', handler)
-app.use('/admin', [adminMiddleware, adminHandler])
+app.use('/api', handler)
+app.use('/api/admin', [adminMiddleware, adminHandler])
 
 async function start () {
   server.listen(port)

@@ -16,7 +16,7 @@ Command line tool to start a new nodejs API based on express framework with Orni
 ## Command line
 ``` shell
 npm install -g ornitojs
-ornito start --dir yourprojectname
+ornito start
 ```
 
 ### Creating a new module

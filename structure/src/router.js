@@ -4,14 +4,11 @@ const path = require('path')
 
 const basePath = path.join(__dirname, '/routes')
 
-exports.routes = _.compact(getFiles())
-exports.adminRoutes = _.compact(getFiles('admin'))
-
 function getFiles (level) {
   if (!level) level = ''
   return fs.readdirSync(`${basePath}/${level}`)
     .map((entity) => {
-      let file = `${basePath}/${level}/${entity}`
+      let file = `${basePath}/${level}${entity}`
       if (!isFile(file)) {
         return
       }
@@ -28,8 +25,20 @@ function isFile (root) {
 }
 
 function registerRoute (level, entity) {
-  let file = require(`${basePath}/${level}/${entity}`)
-  let url = path.parse(entity).name
-  let router = { url, router: file.default }
+  const routerToRequire = `${basePath}/${level}${entity}`
+  // regex to find "user.route.js" and goes for "user"
+  const regex = /[^.]*/
+  const file = require(routerToRequire)
+  const url = regex.exec(entity)[0]
+  const router = { url, router: file }
+
   return router
+}
+
+const routes = _.compact(getFiles())
+const adminRoutes = _.compact(getFiles('admin'))
+
+module.exports = {
+  routes,
+  adminRoutes
 }
