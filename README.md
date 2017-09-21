@@ -8,7 +8,7 @@ Command line interface to start a new nodejs API based on express framework with
 - eslint
 - tests
 
-## Running
+## Setup
 
 **`Ornito JS`** allow you to easily start an API and code oriented to modules. strives to be an easily embeddable and beautiful command line interface for [Node.js](https://nodejs.org/).
 
@@ -24,6 +24,13 @@ Command line interface to start a new nodejs API based on express framework with
 ``` shell
 npm install -g ornitojs
 ornito start
+```
+
+## Running
+``` shell
+npm start
+npm test
+npm run linter
 ```
 
 ### Creating a new module
