@@ -6,14 +6,14 @@ const schema = {
     .min(1)
     .max(120)
     .trim()
-    .required().label('Login'),
+    .required(),
   password: Joi
     .string()
     .min(8)
     .max(60)
     .trim()
     .regex(/(?=[\s\S]*[a-z][\s\S]*)(?=[\s\S]*[0-9][\s\S]*)/i, 'strong password')
-    .required().label('Senha')
+    .required()
 }
 
 function getSchema () {

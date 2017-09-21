@@ -64,7 +64,7 @@ class EmailBuilder {
     request.path = '/v3/mail/send'
 
     const statusEmail = await sg.API(request)
-    console.log('Email sent', statusEmail.statusCode)
+    console.log('Email sent with status', statusEmail.statusCode)
     return statusEmail
   }
 }

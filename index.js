@@ -86,31 +86,47 @@ function main (projectFolder) {
     })
   })
 }
+
+function capitalizeFirstLetter (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
  
 function createResource (name) {
   // copy service, model, schema, persistence to modules folder based on ejs and change the name
   let service = loadTemplate('service.js')
   let persistence = loadTemplate('persistence.js')
   let model = loadTemplate('model.js')
+  let spectest = loadTemplate('spectest.js')
+  let schema = loadTemplate('schema.js')
+  let route = loadTemplate('route.js')
 
-  service.locals.config = { name }
-  persistence.locals.config = { name }
-  model.locals.config = { name }
+  service.locals.config = { name, title: capitalizeFirstLetter(name) }
+  persistence.locals.config = { name, title: capitalizeFirstLetter(name) }
+  model.locals.config = { name, title: capitalizeFirstLetter(name) }
+  spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
+  route.locals.config = { name, title: capitalizeFirstLetter(name) }
+  schema.locals.config = { name, title: capitalizeFirstLetter(name) }
 
   const origin = path.join(__dirname, `/structure/src/modules/${name}`)
 
   mkdir(origin, () => {
-    write(`${origin}/${name}.service.js`, service.render())
-    write(`${origin}/${name}.persistence.js`, persistence.render())
-    write(`${origin}/${name}.model.js`, model.render())
+    mkdir(`${origin}/__tests__`, () => {
+      write(`${origin}/__tests__/${name}.spec.js`, spectest.render())
+      write(`${origin}/${name}.service.js`, service.render())
+      write(`${origin}/${name}.persistence.js`, persistence.render())
+      write(`${origin}/${name}.model.js`, model.render())
+      write(`${origin}/${name}.schema.js`, model.render())
 
-    // copy recursively the structure files to destination folder
-    console.log('destination path', process.cwd())
-    ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
-      if (err) {
-        return console.error(err)
-      }
-      console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
+      // copy recursively the structure files to destination folder
+      console.log('   destination path :', process.cwd())
+      ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
+        if (err) {
+          return console.error(err)
+        }
+        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
+
+        write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
+      })
     })
   })
 }
@@ -161,8 +177,10 @@ function createApplication (name, newPath) {
         version: '0.0.0',
         private: true,
         scripts: {
-          start: 'nodemon ./src/server.js',
-          test: "standard './src/**/*.js' --verbose | snazzy"
+          "start": 'nodemon ./src/server.js',
+          "linter": "standard './src/**/*.js' --verbose | snazzy",
+          "test": "node_modules/.bin/jest --coverage --forceExit",
+          "test:watch": "node_modules/.bin/jest --watch"
         },
         dependencies: {
           "bcrypt-nodejs": "0.0.3",
@@ -194,7 +212,9 @@ function createApplication (name, newPath) {
         },
         "devDependencies": {
           "snazzy": "^7.0.0",
-          "standard": "^10.0.3"
+          "standard": "^10.0.3",
+          "jest": "^21.1.0",
+          "jest-cli": "^21.1.0",
         }
       }
 

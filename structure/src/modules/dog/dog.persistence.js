@@ -2,17 +2,17 @@ const database = require('../../persistence/db').knex
 
 module.exports = {
   async insert (payload) {
-    return database('<%= config.name %>s')
+    return database('dogs')
       .returning('id')
       .insert(payload)
       .then(id => id[0])
       .catch(error => {
         console.error(error)
-        throw new Error(`Error while inserting <%= config.name %>: ${error} ${error.constraint ? error.constraint : ''} `)
+        throw new Error(`Error while inserting dog: ${error} ${error.constraint ? error.constraint : ''} `)
       })
   },
   async get (filter) {
-    return database('<%= config.name %>s')
+    return database('dogs')
       .where(filter)
       .first()
       .then(result => result)

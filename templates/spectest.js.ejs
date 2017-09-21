@@ -1,0 +1,10 @@
+const Service = require('../<%= config.name %>.service')
+const faker = require('faker')
+
+describe('#create() <%= config.name %>', () => {
+  it('should add <%= config.name %> with login and strong password', async () => {
+    const payload = { }
+    const result = await Service.create(payload)
+    expect(result).toHaveProperty('id')
+  })
+})

@@ -1,7 +1,7 @@
 const { guid, hashify } = require('../../utils')
-const persistence = require('./<%= config.name %>.persistence')
+const persistence = require('./dog.persistence')
 
-class <%= config.title %> {
+class Dog {
   async get (id) {
     return persistence.get(id)
   }
@@ -24,4 +24,4 @@ class <%= config.title %> {
   }
 }
 
-module.exports = <%= config.title %>
+module.exports = Dog
