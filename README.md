@@ -1,11 +1,18 @@
-## Ornito CLI
-Command line tool to start a new nodejs API based on express framework with Ornito structure.
+## OrnitoJS
+Command line interface to start a new nodejs API based on express framework with Ornito structure defined from past projects.
+- async await functions
+- email builder using sendgrid service
+- jobs using cronjob
+- resources creation from command line
+- relational and non-relational databases
+- eslint
+- tests
 
 ## Running
 
-**`Ornito CLI`** allow you to easily start an API and code oriented to modules. strives to be an easily embeddable and beautiful command line interface for [Node.js](https://nodejs.org/).
+**`Ornito JS`** allow you to easily start an API and code oriented to modules. strives to be an easily embeddable and beautiful command line interface for [Node.js](https://nodejs.org/).
 
-**`Ornito CLI`** needs the following tools/techonologies to be able to start up.
+**`Ornito JS`** needs the following tools/techonologies to be able to start up.
 - Nodejs > 7.6.0
 - Postgres
 - Mongodb (if you're going to use it)
