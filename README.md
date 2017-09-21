@@ -24,7 +24,7 @@ ornito start
 ornito module user
 ```
 
-### Module structure
+### 🔧 Module structure
 * **user**
     * **__tests__**
       * **user.spec.js**
@@ -33,11 +33,12 @@ ornito module user
     * **user.schema.js**
     * **user.service.js**
 
+### 💬 Structure description
 * **__tests__:** We are using [Jest](https://facebook.github.io/jest/) to test our models, but you can test endpoints, services and schema validations in this folder. The test suit is called from `npm test`
 * **model:** Our entities represented by javascript classes and we call some database actions here, it might be mongoose calls or relational database calls
 * **persistence:** Here you're able to require your database driver and start querying and inserting data to your choosen database. 
 * **schema:** We're using [Joi](https://github.com/hapijs/joi) to validate our models, so when we receive a request, if the payload validation is not correct, we throw an error.
-* **service:** We can validate params, integrate with 3rd part services, create rules etc.
+* **service:** We can validate params, integrate with 3rd part services, create rules, call our models, etc.
 
 ### 💡 To do:
 
