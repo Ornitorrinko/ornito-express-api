@@ -1,2 +1,5 @@
 node_modules
 **/.DS_Store
+src/modules/
+
+!src/modules/user
