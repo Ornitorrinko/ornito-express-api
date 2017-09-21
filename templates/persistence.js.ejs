@@ -1,0 +1,20 @@
+const database = require('../../persistence/db').knex
+
+module.exports = {
+  async insert (person) {
+    return database('<%= config.name %>s')
+      .returning('id')
+      .insert(person)
+      .then(id => id[0])
+      .catch(error => {
+        console.error(error)
+        throw new Error(`Error while inserting <%= config.name %>: ${error.constraint}`)
+      })
+  },
+  async get (filter) {
+    return database('<%= config.name %>s')
+      .where(filter)
+      .first()
+      .then(result => result)
+  }
+}

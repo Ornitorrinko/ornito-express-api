@@ -19,6 +19,7 @@ const pkg = require('./package.json')
 const version = pkg.version
 
 let WORKING_DIR = null
+let DESTINATION_PATH = ''
 
 let config = {
   useMongodb: true,
@@ -36,31 +37,21 @@ program
   .option('-d, --dir [name]', 'Which folder the project structure should be created')
   .action(createArchitecture)
 
-program
-  .command('router [name]')
-  .description('create route endpoint with the specified name and http methods')
-  .option('-l, --level [name]', 'Which level this route should be created, eg: admin superadmin')
-  .action(createRoute)
+// program
+//   .command('router [name]')
+//   .description('create route endpoint with the specified name and http methods')
+//   .option('-l, --level [name]', 'Which level this route should be created, eg: admin superadmin')
+//   .action(createRoute)
 
 program
-  .command('service [name]')
-  .description('create service with the specified name')
-  .action(createRoute)
+  .command('module [name]')
+  .description('create resource with model, service, persistence and router with the specified name and http methods')
+  .action(createResource)
 
-program
-  .command('model [name]')
-  .description('create model with the specified name')
-  .action(createRoute)
-
-program
-  .command('persistence [name]')
-  .description('create persistence file with the specified name')
-  .action(createRoute)
-
-program
-  .command('job [name]')
-  .description('create job with the specified name and http methods')
-  .action(createRoute)
+// program
+//   .command('job [name]')
+//   .description('create job with the specified name and http methods')
+//   .action(createRoute)
 
 
 program.parse(process.argv)
@@ -73,6 +64,7 @@ function main (projectFolder) {
   // Path
   askForProjectFolder().then(answer => {
     let destinationPath = answer.projectFolder
+    DESTINATION_PATH = destinationPath
 
     // App name
     let appName = createAppName(path.resolve(destinationPath))
@@ -95,8 +87,32 @@ function main (projectFolder) {
   })
 }
  
-function createRoute (route, option) {
-  
+function createResource (name) {
+  // copy service, model, schema, persistence to modules folder based on ejs and change the name
+  let service = loadTemplate('service.js')
+  let persistence = loadTemplate('persistence.js')
+  let model = loadTemplate('model.js')
+
+  service.locals.config = { name }
+  persistence.locals.config = { name }
+  model.locals.config = { name }
+
+  const origin = path.join(__dirname, `/structure/src/modules/${name}`)
+
+  mkdir(origin, () => {
+    write(`${origin}/${name}.service.js`, service.render())
+    write(`${origin}/${name}.persistence.js`, persistence.render())
+    write(`${origin}/${name}.model.js`, model.render())
+
+    // copy recursively the structure files to destination folder
+    console.log('destination path', process.cwd())
+    ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
+      if (err) {
+        return console.error(err)
+      }
+      console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
+    })
+  })
 }
 
 function askForProjectFolder () {

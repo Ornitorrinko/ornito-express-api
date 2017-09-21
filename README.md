@@ -32,3 +32,4 @@ ornito module user
 * create job from CLI
 * create module from CLI
 * option to inform database settings while creating structure
+* implicit filters on routes

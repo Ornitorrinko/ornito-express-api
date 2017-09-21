@@ -1,0 +1,29 @@
+const Model = require('./<%= config.name %>.model')
+const Schema = require('./<%= config.name %>.schema')
+
+const create = async (body) => {
+  try {
+    Schema.validate(body)
+    const <%= config.name %> = new Model()
+    const result = await <%= config.name %>.create(body)
+
+    return { id: result }
+  } catch (err) {
+    console.log('err', err)
+    throw err
+  }
+}
+
+const get = async (id) => {
+
+}
+
+const update = async (id, body) => {
+
+}
+
+module.exports = {
+  create,
+  get,
+  update
+}
