@@ -235,8 +235,8 @@ function createApplication (name, newPath) {
       console.log('   run the app:')
       console.log('     %s DEBUG=%s npm start', '$', name)
       console.log()
-      console.log('   now you need to set the database configuration at ./src/config/development.json')
-      console.log()
+      console.log(`   \x1b[36mPlease do not forget to setup your database configuration editing ./src/config/development.json \x1b[0m`)
+      console.log(`   \x1b[36m Happy coding :) \x1b[0m`)
     })
   })
 }

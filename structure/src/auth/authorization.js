@@ -12,20 +12,17 @@ module.exports.verifyJWT = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, 'wrong-secret')
+    const decoded = jwt.verify(token, SECRET_ADMIN)
     req.decoded = decoded
     next()
   } catch (err) {
-    console.log(err)
-    return res.json({ success: false, message: 'Failed to authenticate token.' })
+    // console.log(err)
+    return res.json({ success: false, message: 'Failed to authenticate token.', err })
   }
 }
 
-module.exports.sign = (payload) => {
-  const generatedToken = jwt.sign(payload, SECRET_ADMIN, {
-    expiresIn: 60
-    // expiresIn: '7d'
-  })
+module.exports.sign = (payload, time = '7d') => {
+  const generatedToken = jwt.sign({ data: payload }, SECRET_ADMIN, { expiresIn: time })
 
   return generatedToken
 }
