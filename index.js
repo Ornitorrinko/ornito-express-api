@@ -125,8 +125,8 @@ function createResource (name) {
         }
 
         write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
-        write(`${process.cwd()}/src/routes/admin/${name}.route.js`, route.render())
-        
+        write(`${process.cwd()}/src/routes/admin/authenticated.${name}.route.js`, route.render())
+
         console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
       })
     })
@@ -237,8 +237,10 @@ function createApplication (name, newPath) {
       console.log('   run the app:')
       console.log('     %s npm start', '$', name)
       console.log()
-      console.log(`   \x1b[36mPlease do not forget to setup your database configuration by editing ./src/config/development.json \x1b[0m`)
-      console.log(`   \x1b[36mHappy coding :) \x1b[0m`)
+      console.log()
+      console.log(`   \x1b[33mImportant: \x1b[0m`)
+      console.log(`   \x1b[33m\x1b[1mPlease do not forget to setup your database configuration by editing ./src/config/development.json \x1b[0m`)
+      console.log(`   \x1b[33m\x1b[1mHappy coding :) \x1b[0m`)
     })
   })
 }
