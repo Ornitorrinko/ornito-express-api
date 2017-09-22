@@ -123,9 +123,11 @@ function createResource (name) {
         if (err) {
           return console.error(err)
         }
-        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
 
         write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
+        write(`${process.cwd()}/src/routes/admin/${name}.route.js`, route.render())
+        
+        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
       })
     })
   })
@@ -233,10 +235,10 @@ function createApplication (name, newPath) {
       console.log('     %s cd %s && npm install', '$', newPath)
       console.log()
       console.log('   run the app:')
-      console.log('     %s DEBUG=%s npm start', '$', name)
+      console.log('     %s npm start', '$', name)
       console.log()
-      console.log(`   \x1b[36mPlease do not forget to setup your database configuration editing ./src/config/development.json \x1b[0m`)
-      console.log(`   \x1b[36m Happy coding :) \x1b[0m`)
+      console.log(`   \x1b[36mPlease do not forget to setup your database configuration by editing ./src/config/development.json \x1b[0m`)
+      console.log(`   \x1b[36mHappy coding :) \x1b[0m`)
     })
   })
 }

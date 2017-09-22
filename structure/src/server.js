@@ -3,11 +3,11 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const Cron = require('./backgroundTasks')
-const { adminMiddleware } = require('./auth/authorization')
+const { verifyJWT } = require('./auth/authorization')
 const { routes, adminRoutes } = require('./router')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/ornitoapi', { useMongoClient: true })
+mongoose.connect('mongodb://localhost/', { useMongoClient: true })
 
 const handler = require('ornito-route-handler')({
   version: '1.0',
@@ -32,7 +32,7 @@ const activateJobs = process.env.JOBS || false
 const server = http.createServer(app)
 
 app.use('/api', handler)
-app.use('/api/admin', [adminMiddleware, adminHandler])
+app.use('/api/admin', [verifyJWT, adminHandler])
 
 async function start () {
   server.listen(port)
