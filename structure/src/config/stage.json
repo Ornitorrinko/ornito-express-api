@@ -1,6 +1,6 @@
 {
   "db_host": "",
-  "SENDGRID_API_KEY": "",
+  "sendgrid_api_key": "",
   "iugu": {
     "url": "https://api.iugu.com/v1/",
     "api_key": "",

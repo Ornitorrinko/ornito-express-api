@@ -1,12 +1,12 @@
 {
   "name": "ornitojs",
-  "version": "1.0.0",
-  "description": "A command-line tool for creating api structure",
+  "version": "0.0.1",
+  "description": "A CLI to optimize developers time while creating APIs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Ornito",
+  "author": "Victor Kurauchi at Ornito",
   "license": "ISC",
   "bin": {
     "ornito": "./index.js"

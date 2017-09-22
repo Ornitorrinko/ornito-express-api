@@ -38,7 +38,7 @@ class EmailBuilder {
     })
 
     // send mail with defined transport object
-    let sg = require('sendgrid').SendGrid(config.SENDGRID_API_KEY)
+    let sg = require('sendgrid').SendGrid(config.sendgrid_api_key)
     let request = sg.emptyRequest()
     let remetente = 'naoresponda@naoresponda.com.br'
     let name = 'Nameyourprovider'
