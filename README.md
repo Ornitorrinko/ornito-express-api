@@ -40,6 +40,35 @@ npm run linter
 ornito module user
 ```
 
+### Database configuration
+`./knexfile.js`
+```
+development: {
+  client: 'postgresql',
+  connection: {
+    database: 'ornitoapi_db',
+    user: 'youruser',
+    password: 'yourpassword'
+  },
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: 'migrations'
+  },
+  seeds: {
+    directory: './seeds/dev/'
+  }
+},
+```
+
+`./src/config/ENV.json`
+```
+"db_host": "postgres://youruser:yourpassword@localhost:5432/ornitoapi_db"
+```
+
+
 ### 🔧 Module structure
 * **user**
     * **__tests__**
