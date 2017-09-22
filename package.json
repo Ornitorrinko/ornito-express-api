@@ -1,6 +1,6 @@
 {
   "name": "ornitojs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A CLI to optimize developers time while creating APIs",
   "main": "index.js",
   "scripts": {

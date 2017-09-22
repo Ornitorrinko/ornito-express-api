@@ -41,12 +41,12 @@ ornito module user
 ```
 
 ### Database configuration
-`./knexfile.js`
-```
+➡️ ./knexfile.js
+```shell
 development: {
   client: 'postgresql',
   connection: {
-    database: 'ornitoapi_db',
+    database: 'yourdb',
     user: 'youruser',
     password: 'yourpassword'
   },
@@ -63,11 +63,24 @@ development: {
 },
 ```
 
-`./src/config/ENV.json`
+➡️ ./src/config/ENV.json
+```shell
+{
+  "db_host": "postgres://youruser:yourpassword@localhost:5432/yourdb",
+  "sendgrid_api_key": "",
+  "iugu": {
+    "url": "https://api.iugu.com/v1/",
+    "api_key": "",
+    "api_token": ""
+  },
+  "cloudinary": {
+    "cloud_name": "",
+    "api_key": "",
+    "api_secret": "",
+    "env_variable": ""
+  }
+}
 ```
-"db_host": "postgres://youruser:yourpassword@localhost:5432/ornitoapi_db"
-```
-
 
 ### 🔧 Module structure
 * **user**
