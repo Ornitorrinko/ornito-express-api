@@ -1,5 +1,6 @@
 {
   "name": "ornitojs",
+  "url": "https://github.com/Ornitorrinko/ornito-express-api",
   "version": "0.0.2",
   "description": "A CLI to optimize developers time while creating APIs",
   "main": "index.js",

@@ -8,6 +8,7 @@ Command line interface to start a new nodejs API based on express framework with
 - eslint
 - tests
 - convention over configuration
+- knex.js
 
 ## Setup
 
