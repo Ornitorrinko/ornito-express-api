@@ -46,7 +46,7 @@ program
 program
   .command('module [name]')
   .description('create resource with model, service, persistence and router with the specified name and http methods')
-  .action(createResource)
+  .action(createModule)
 
 // program
 //   .command('job [name]')
@@ -89,48 +89,6 @@ function main (projectFolder) {
 
 function capitalizeFirstLetter (string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
-}
- 
-function createResource (name) {
-  // copy service, model, schema, persistence to modules folder based on ejs and change the name
-  let service = loadTemplate('service.js')
-  let persistence = loadTemplate('persistence.js')
-  let model = loadTemplate('model.js')
-  let spectest = loadTemplate('spectest.js')
-  let schema = loadTemplate('schema.js')
-  let route = loadTemplate('route.js')
-
-  service.locals.config = { name, title: capitalizeFirstLetter(name) }
-  persistence.locals.config = { name, title: capitalizeFirstLetter(name) }
-  model.locals.config = { name, title: capitalizeFirstLetter(name) }
-  spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
-  route.locals.config = { name, title: capitalizeFirstLetter(name) }
-  schema.locals.config = { name, title: capitalizeFirstLetter(name) }
-
-  const origin = path.join(__dirname, `/structure/src/modules/${name}`)
-
-  mkdir(origin, () => {
-    mkdir(`${origin}/__tests__`, () => {
-      write(`${origin}/__tests__/${name}.spec.js`, spectest.render())
-      write(`${origin}/${name}.service.js`, service.render())
-      write(`${origin}/${name}.persistence.js`, persistence.render())
-      write(`${origin}/${name}.model.js`, model.render())
-      write(`${origin}/${name}.schema.js`, model.render())
-
-      // copy recursively the structure files to destination folder
-      console.log('   destination path :', process.cwd())
-      ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
-        if (err) {
-          return console.error(err)
-        }
-
-        write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
-        write(`${process.cwd()}/src/routes/admin/authenticated.${name}.route.js`, route.render())
-
-        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
-      })
-    })
-  })
 }
 
 function askForProjectFolder () {
@@ -241,6 +199,45 @@ function createApplication (name, newPath) {
       console.log(`   \x1b[33mImportant: \x1b[0m`)
       console.log(`   \x1b[33m\x1b[1mPlease do not forget to setup your database configuration by editing ./src/config/development.json \x1b[0m`)
       console.log(`   \x1b[33m\x1b[1mHappy coding :) \x1b[0m`)
+    })
+  })
+}
+
+function createModule (name) {
+  // copy service, model, persistence to modules folder based on ejs and change the name
+  let service = loadTemplate('service.js')
+  let persistence = loadTemplate('persistence.js')
+  let model = loadTemplate('model.js')
+  let spectest = loadTemplate('spectest.js')
+  let route = loadTemplate('route.js')
+
+  service.locals.config = { name, title: capitalizeFirstLetter(name) }
+  persistence.locals.config = { name, title: capitalizeFirstLetter(name) }
+  model.locals.config = { name, title: capitalizeFirstLetter(name) }
+  spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
+  route.locals.config = { name, title: capitalizeFirstLetter(name) }
+
+  const origin = path.join(__dirname, `/structure/src/modules/${name}`)
+
+  mkdir(origin, () => {
+    mkdir(`${origin}/__tests__`, () => {
+      write(`${origin}/__tests__/${name}.spec.js`, spectest.render())
+      write(`${origin}/${name}.service.js`, service.render())
+      write(`${origin}/${name}.persistence.js`, persistence.render())
+      write(`${origin}/${name}.model.js`, model.render())
+
+      // copy recursively the structure files to destination folder
+      console.log('   destination path :', process.cwd())
+      ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
+        if (err) {
+          return console.error(err)
+        }
+
+        write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
+        write(`${process.cwd()}/src/routes/admin/authenticated.${name}.route.js`, route.render())
+
+        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
+      })
     })
   })
 }

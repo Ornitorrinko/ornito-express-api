@@ -1,7 +1,7 @@
 {
   "name": "ornitojs",
   "url": "https://github.com/Ornitorrinko/ornito-express-api",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A CLI to optimize developers time while creating APIs",
   "main": "index.js",
   "scripts": {

@@ -1,29 +1,34 @@
 const User = require('./user.model')
-const Schema = require('./user.schema')
+const persistence = require('./user.persistence')
 
-const create = async (body) => {
-  try {
-    Schema.validate(body)
-    const user = new User()
-    const result = await user.create(body)
-
-    return { id: result }
-  } catch (err) {
-    console.log('err', err)
-    throw err
-  }
+const list = async (filter) => {
+  return await persistence.list(filter)
 }
 
-const get = async (id) => {
+const getById = async (id) => {
+  return await persistence.getById({ id: id })
+}
 
+const create = async (body) => {
+  const user = new User(body)
+  const id = await persistence.insert(user.data)
+  return { id: id };
 }
 
 const update = async (id, body) => {
+  const user = new User(getById(id));
+  const data = user.update(body);
+  await persistence.update(id, data);
+}
 
+const remove = async (id) => {
+  await persistence.remove(id)
 }
 
 module.exports = {
+  list,
+  getById,
   create,
-  get,
-  update
+  update,
+  remove,
 }

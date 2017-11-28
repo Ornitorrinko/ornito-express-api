@@ -1,20 +1,3 @@
-const database = require('../../persistence/db').knex
+const PostgresDb = require('../../persistence/postgres.db')
 
-module.exports = {
-  async insert (payload) {
-    return database('<%= config.name %>s')
-      .returning('id')
-      .insert(payload)
-      .then(id => id[0])
-      .catch(error => {
-        console.error(error)
-        throw new Error(`Error while inserting <%= config.name %>: ${error} ${error.constraint ? error.constraint : ''} `)
-      })
-  },
-  async get (filter) {
-    return database('<%= config.name %>s')
-      .where(filter)
-      .first()
-      .then(result => result)
-  }
-}
+module.exports = new PostgresDb('<%= config.name %>s')
