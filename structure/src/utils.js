@@ -123,24 +123,9 @@ function cleaner (fields, obj) {
   }, {})
 }
 
-async function hashify (value) {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(GEN_FACTOR, (err, salt) => {
-      if (err) {
-        reject(err)
-        return
-      }
-
-      bcrypt.hash(value, salt, null, (err, hash) => {
-        if (err) {
-          reject(err)
-          return
-        }
-
-        resolve(hash)
-      })
-    })
-  })
+function hashify (value) {
+  var salt = bcrypt.genSaltSync(GEN_FACTOR);
+  return bcrypt.hashSync(value, salt);
 }
 
 function eztravelify () {

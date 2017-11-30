@@ -3,7 +3,7 @@ const Joi = require('joi')
 module.exports = {
     validate(data) {
         return {
-            for(shema) {
+            for(schema) {
                 const result = Joi.validate(data, schema)
 
                 if (result.error || result.errors) {

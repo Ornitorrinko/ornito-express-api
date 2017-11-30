@@ -15,7 +15,7 @@ class PostgresDb {
     }
 
     get query() {
-        return knex(table);
+        return knex(this.table);
     }
 
     async list(filter) {
@@ -32,20 +32,21 @@ class PostgresDb {
     }
 
     async insert(data) {
-        return knex(table)
+        return knex(this.table)
             .returning('id')
             .insert(data)
             .then(id => id[0])
     }
 
     async update(id, data) {
-        return knex(table)
-            .where('id', data.id)
+        return knex(this.table)
+            .where('id', id)
             .update(data)
+            .then(id => id[0])
     }
 
     async remove(id) {
-        return knex(table)
+        return knex(this.table)
             .where('id', id)
             .del()
     }

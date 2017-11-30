@@ -2,7 +2,7 @@ const <%= config.title %> = require('./<%= config.name %>.model')
 const persistence = require('./<%= config.name %>.persistence')
 
 const list = async (filter) => {
-  return await persistence.list(filter)
+  return await persistence.list(filter || {})
 }
 
 const getById = async (id) => {
@@ -12,13 +12,13 @@ const getById = async (id) => {
 const create = async (body) => {
   const <%= config.name %> = new <%= config.title %>(body)
   const id = await persistence.insert(<%= config.name %>.data)
-  return { id: id };
+  return id;
 }
 
 const update = async (id, body) => {
-  const <%= config.name %> = new <%= config.title %>(getById(id))
-  const data = <%= config.name %>.update(body)
-  await persistence.update(id, data)
+  const <%= config.name %> = new <%= config.title %>(await getById(id));
+  const data = <%= config.name %>.update(body);
+  await persistence.update(id, data);
 }
 
 const remove = async (id) => {

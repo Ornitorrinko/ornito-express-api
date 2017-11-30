@@ -5,13 +5,15 @@ const validator = require('../../helpers/validator')
 class User {
   constructor({ id, login, password }) {
     this.data = {
-      login: login
+      id: id,
+      login: login,
+      password: password
     };
     this.schema = schema;
 
     if(id === undefined) {
       this.data.id = guid()
-      this.data.password = await hashify(body.password)
+      this.data.password = hashify(password)
     }
 
     this.validate()
@@ -23,7 +25,7 @@ class User {
     }
 
     if(password) {
-      this.data.password = await hashify(body.password)
+      this.data.password = hashify(password)
     }
 
     this.validate()
@@ -42,6 +44,8 @@ class User {
 }
 
 const schema = {
+  id: Joi.string().guid(),
+    
   login: Joi
     .string()
     .min(1)
