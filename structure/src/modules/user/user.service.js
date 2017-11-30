@@ -16,7 +16,12 @@ const create = async (body) => {
 }
 
 const update = async (id, body) => {
-  const user = new User(await getById(id));
+  const found = await getById(id);
+  
+  if(!found)
+    throw new Error('Não encontrado.')
+
+  const user = new User(found);
   const data = user.update(body);
   await persistence.update(id, data);
 }
