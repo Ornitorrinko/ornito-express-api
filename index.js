@@ -217,27 +217,17 @@ function createModule (name) {
   spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
   route.locals.config = { name, title: capitalizeFirstLetter(name) }
 
-  const origin = path.join(__dirname, `/structure/src/modules/${name}`)
+  const destination = `${process.cwd()}/src`;
 
-  mkdir(origin, () => {
-    mkdir(`${origin}/__tests__`, () => {
-      write(`${origin}/__tests__/${name}.spec.js`, spectest.render())
-      write(`${origin}/${name}.service.js`, service.render())
-      write(`${origin}/${name}.persistence.js`, persistence.render())
-      write(`${origin}/${name}.model.js`, model.render())
-
-      // copy recursively the structure files to destination folder
-      console.log('   destination path :', process.cwd())
-      ncp(origin, `${process.cwd()}/src/modules/${name}`, (err) => {
-        if (err) {
-          return console.error(err)
-        }
-
-        write(`${process.cwd()}/src/routes/${name}.route.js`, route.render())
-        write(`${process.cwd()}/src/routes/admin/authenticated.${name}.route.js`, route.render())
-
-        console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
-      })
+  mkdir(`${destination}/modules/${name}`, () => {
+    mkdir(`${destination}/modules/${name}/__tests__`, () => {
+      write(`${destination}/modules/${name}/__tests__/${name}.spec.js`, spectest.render())
+      write(`${destination}/modules/${name}/${name}.service.js`, service.render())
+      write(`${destination}/modules/${name}/${name}.persistence.js`, persistence.render())
+      write(`${destination}/modules/${name}/${name}.model.js`, model.render())
+      write(`${destination}/routes/${name}.route.js`, route.render())
+      write(`${destination}/routes/admin/authenticated.${name}.route.js`, route.render())
+      console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
     })
   })
 }
