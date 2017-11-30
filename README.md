@@ -106,3 +106,6 @@ development: {
 * create job from CLI
 * option to inform database settings while creating structure (user, password, host)
 * implicit filters on routes
+* unify postgres database config
+* error handler
+* create mongodb module
