@@ -45,7 +45,7 @@ program
 
 program
   .command('module [name]')
-  .description('create resource with model, service, persistence and router with the specified name and http methods')
+  .description('create resource with schema, service, persistence and router with the specified name and http methods')
   .action(createModule)
 
 // program
@@ -204,16 +204,16 @@ function createApplication (name, newPath) {
 }
 
 function createModule (name) {
-  // copy service, model, persistence to modules folder based on ejs and change the name
+  // copy service, schema, persistence to modules folder based on ejs and change the name
   let service = loadTemplate('service.js')
   let persistence = loadTemplate('persistence.js')
-  let model = loadTemplate('model.js')
+  let schema = loadTemplate('schema.js')
   let spectest = loadTemplate('spectest.js')
   let route = loadTemplate('route.js')
 
   service.locals.config = { name, title: capitalizeFirstLetter(name) }
   persistence.locals.config = { name, title: capitalizeFirstLetter(name) }
-  model.locals.config = { name, title: capitalizeFirstLetter(name) }
+  schema.locals.config = { name, title: capitalizeFirstLetter(name) }
   spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
   route.locals.config = { name, title: capitalizeFirstLetter(name) }
 
@@ -224,7 +224,7 @@ function createModule (name) {
       write(`${destination}/modules/${name}/__tests__/${name}.spec.js`, spectest.render())
       write(`${destination}/modules/${name}/${name}.service.js`, service.render())
       write(`${destination}/modules/${name}/${name}.persistence.js`, persistence.render())
-      write(`${destination}/modules/${name}/${name}.model.js`, model.render())
+      write(`${destination}/modules/${name}/${name}.schema.js`, schema.render())
       write(`${destination}/routes/${name}.route.js`, route.render())
       write(`${destination}/routes/admin/authenticated.${name}.route.js`, route.render())
       console.log(`   \x1b[36mcreated module ${name} files\x1b[0m`)
