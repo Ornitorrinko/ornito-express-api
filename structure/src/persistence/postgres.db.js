@@ -52,4 +52,4 @@ class PostgresDB {
     }
 }
 
-module.exports = PostgresDb;
+module.exports = PostgresDB;

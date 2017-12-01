@@ -5,29 +5,36 @@ class MongoDB {
         this.model = model
     }
 
-    get query() {
-        return this.model;
-    }
-
     async list(filter) {
-        // TODO: not implemented
+        if (filter.id) {
+            filter._id = filter.id;
+            delete filter.id;
+        }
+
+        return this.model.find(filter);
     }
 
     async get(filter) {
-        // TODO: not implemented
+        if (filter.id) {
+            filter._id = filter.id;
+            delete filter.id;
+        }
+
+        return this.model.findOne(filter);
     }
 
     async insert(data) {
-        // TODO: not implemented
+        var Model = this.model;
+        return (new Model(data)).save();
     }
 
     async update(id, data) {
-        // TODO: not implemented
+        return this.model.findOneAndUpdate({ _id: id }, data);
     }
 
     async remove(id) {
-        // TODO: not implemented
+        return this.model.findOneAndRemove({ _id: id });
     }
 }
 
-module.exports = PostgresDb;
+module.exports = MongoDB;

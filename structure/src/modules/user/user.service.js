@@ -26,22 +26,24 @@ const create = async ({ login, password }) => {
 }
 
 const update = async (id, { login, password }) => {
-  const user = await getById(id);
+  const exits = await getById(id)
   
-  if(!user)
+  if(!exits)
     throw new Error('Não encontrado.')
 
-  user.login = login;
+  let user = {
+    login: login
+  }
 
   if(password) {
-    user.password = hashify(password);
+    user.password = hashify(password)
   }
 
   validator
     .validate(user)
-    .for(schema);
+    .for(schema)
 
-  await persistence.update(id, user);
+  await persistence.update(id, user)
 }
 
 const remove = async (id) => {

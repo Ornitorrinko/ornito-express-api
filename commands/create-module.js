@@ -12,9 +12,9 @@ function createModule(name, options) {
   let spectest = loadTemplate('spectest.js')
   let route = loadTemplate('route.js')
 
-  service.locals.config = { name, title: capitalizeFirstLetter(name) }
+  service.locals.config = { name, title: capitalizeFirstLetter(name), database }
   persistence.locals.config = { name, title: capitalizeFirstLetter(name), database }
-  schema.locals.config = { name, title: capitalizeFirstLetter(name) }
+  schema.locals.config = { name, title: capitalizeFirstLetter(name), database }
   model.locals.config = { name, title: capitalizeFirstLetter(name) }
   spectest.locals.config = { name, title: capitalizeFirstLetter(name) }
   route.locals.config = { name, title: capitalizeFirstLetter(name) }
@@ -47,14 +47,14 @@ function getDatabaseConfig(options) {
   if (options.mongodb) {
     return {
       name: 'MongoDB',
-      file: 'mongo-db',
+      file: 'mongo.db',
       isMongoDB: true
     }
   }
 
   return {
     name: 'PostgresDB',
-    file: 'postgres-db'
+    file: 'postgres.db'
   }
 }
 

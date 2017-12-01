@@ -13,7 +13,9 @@ const getById = async (id) => {
 
 const create = async ({ name }) => {
   const <%= config.name %> = {
-    id: guid(),
+    <% if(!config.database.isMongoDB) { -%>
+      id: guid(),
+    <% } -%>
     name: name
   }
 
@@ -25,18 +27,20 @@ const create = async ({ name }) => {
 }
 
 const update = async (id, { name }) => {
-  const <%= config.name %> = await getById(id);
+  const exists = await getById(id)
   
-  if(!<%= config.name %>)
+  if(!exists)
     throw new Error('Não encontrado.')
 
-  <%= config.name %>.name = name;
+  let <%= config.name %> = {
+    name: name
+  }
 
   validator
     .validate(<%= config.name %>)
-    .for(schema);
+    .for(schema)
 
-  await persistence.update(id, <%= config.name %>);
+  await persistence.update(id, <%= config.name %>)
 }
 
 const remove = async (id) => {
