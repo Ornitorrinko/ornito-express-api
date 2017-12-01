@@ -1,27 +1,51 @@
+const Joi = require('joi')
 const { guid, hashify } = require('../../utils')
-const persistence = require('./<%= config.name %>.persistence')
+const validator = require('../../helpers/validator')
 
 class <%= config.title %> {
-  async get (id) {
-    return persistence.get(id)
+  constructor({ id, name }) {
+    this.data = {
+      id: id,
+      name: name
+    };
+    this.schema = schema;
+
+    if(id === undefined) {
+      this.data.id = guid()
+    }
+
+    this.validate()
   }
 
-  async getBy (filter) {
-    return persistence.getBy(filter)
+  update({ name }) {
+    if(name) {
+      this.data.name = name
+    }
+
+    this.validate()
+
+    return {
+      name: this.data.name
+    };
   }
 
-  async list (filter) {
-    return persistence.list(filter)
-  }
-
-  async create (data) {
-    data.id = guid()
-    data.created_at = new Date()
-    data.password = await hashify(data.password)
-    // you're able now to insert to relational database with persistence,
-    // or use mongoose to insert into mongodb
-    return persistence.insert(data)
+  validate() {
+    validator
+      .validate(this.data)
+      .for(this.schema)
   }
 }
+
+const schema = {
+  id: Joi.string().guid(),
+    
+  name: Joi
+    .string()
+    .min(1)
+    .max(120)
+    .trim()
+    .required()
+    .label('Name')
+};
 
 module.exports = <%= config.title %>

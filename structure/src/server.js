@@ -5,9 +5,6 @@ const bodyParser = require('body-parser')
 const Cron = require('./backgroundTasks')
 const { verifyJWT } = require('./auth/authorization')
 const { routes, adminRoutes } = require('./router')
-const mongoose = require('mongoose')
-
-mongoose.connect('mongodb://localhost/', { useMongoClient: true })
 
 const handler = require('ornito-route-handler')({
   version: '1.0',

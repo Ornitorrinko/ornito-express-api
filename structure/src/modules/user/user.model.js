@@ -1,27 +1,67 @@
+const Joi = require('joi')
 const { guid, hashify } = require('../../utils')
-const persistence = require('./user.persistence')
+const validator = require('../../helpers/validator')
 
 class User {
-  async get (id) {
-    return persistence.get(id)
+  constructor({ id, login, password }) {
+    this.data = {
+      id: id,
+      login: login,
+      password: password
+    };
+    this.schema = schema;
+
+    if(id === undefined) {
+      this.data.id = guid()
+      this.data.password = hashify(password)
+    }
+
+    this.validate()
   }
 
-  async getBy (filter) {
-    return persistence.getBy(filter)
+  update({ login, password }) {
+    if(login) {
+      this.data.login = login
+    }
+
+    if(password) {
+      this.data.password = hashify(password)
+    }
+
+    this.validate()
+
+    return {
+      login: this.data.login,
+      password: this.data.password,
+    };
   }
 
-  async list (filter) {
-    return persistence.list(filter)
-  }
-
-  async create (data) {
-    data.id = guid()
-    data.created_at = new Date()
-    data.password = await hashify(data.password)
-    // you're able now to insert to relational database with persistence,
-    // or use mongoose to insert into mongodb
-    return persistence.insert(data)
+  validate() {
+    validator
+      .validate(this.data)
+      .for(this.schema)
   }
 }
+
+const schema = {
+  id: Joi.string().guid(),
+    
+  login: Joi
+    .string()
+    .min(1)
+    .max(120)
+    .trim()
+    .required()
+    .label('Login'),
+
+  password: Joi
+    .string()
+    .min(8)
+    .max(60)
+    .trim()
+    .regex(/(?=[\s\S]*[a-z][\s\S]*)(?=[\s\S]*[0-9][\s\S]*)/i, 'strong password')
+    .required()
+    .label('Senha')
+};
 
 module.exports = User

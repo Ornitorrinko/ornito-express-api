@@ -1,5 +1,5 @@
 node_modules
 **/.DS_Store
-src/modules/
-
-!src/modules/user
+structure/src/modules/
+!structure/src/modules/user
+hello-world-ornito/
