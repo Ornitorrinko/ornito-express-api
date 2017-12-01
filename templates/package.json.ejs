@@ -1,0 +1,45 @@
+{
+    "name": "<%= config.appName %>",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "nodemon ./src/server.js",
+        "linter": "standard './src/**/*.js' --verbose | snazzy",
+        "test": "node_modules/.bin/jest --coverage --forceExit",
+        "test:watch": "node_modules/.bin/jest --watch"
+    },
+    "dependencies": {
+        "bcrypt-nodejs": "0.0.3",
+        "body-parser": "~1.17.1",
+        "cookie-parser": "~1.4.3",
+        "cors": "^2.7.1",
+        "cron": "^1.1.0",
+        "debug": "~2.6.3",
+        "express": "4.13.3",
+        "express-logger": "0.0.3",
+        "express-session": "^1.14.2",
+        "jsonwebtoken": "^7.4.2",
+        "knex": "^0.8.6",
+        "lodash": "^4.16.1",
+        "moment": "^2.14.1",
+        "mongoose": "^4.8.5",
+        "morgan": "~1.8.1",
+        "numeral": "^1.5.3",
+        "ornito-route-handler": "^1.0.3",
+        "randomstring": "^1.1.5",
+        "serve-favicon": "~2.4.2",
+        "shortid": "^2.2.6",
+        "slug": "^0.9.1",
+        "cpf_cnpj": "^0.2.0",
+        "node-rsa": "^0.4.2",
+        "uuid": "^3.1.0",
+        "pg": "^7.3.0",
+        "pug": "^2.0.0-rc.4"
+    },
+    "devDependencies": {
+        "snazzy": "^7.0.0",
+        "standard": "^10.0.3",
+        "jest": "^21.1.0",
+        "jest-cli": "^21.1.0"
+    }
+}

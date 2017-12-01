@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const Cron = require('./backgroundTasks')
 const { verifyJWT } = require('./auth/authorization')
 const { routes, adminRoutes } = require('./router')
-<% if (config.useMongodb) { -%>
+<% if (config.enableMongoDB) { -%>
 const mongoose = require('mongoose')
 
 mongoose.connect('mongodb://localhost/'<%= config.name %>, { useMongoClient: true })

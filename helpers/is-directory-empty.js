@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-function emptyDirectory(dir) {
+function isDirectoryEmpty(dir) {
     if (!fs.existsSync(dir)) {
         return true
     }
@@ -9,4 +9,4 @@ function emptyDirectory(dir) {
     return !files && !files.length
 }
 
-module.exports = emptyDirectory
+module.exports = isDirectoryEmpty
