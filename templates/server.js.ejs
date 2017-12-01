@@ -9,6 +9,7 @@ const { routes, adminRoutes } = require('./router')
 const mongoose = require('mongoose')
 
 mongoose.connect('mongodb://localhost/'<%= config.name %>, { useMongoClient: true })
+mongoose.Promise = global.Promise;
 <% } -%>
 
 const handler = require('ornito-route-handler')({

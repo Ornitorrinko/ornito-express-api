@@ -1,0 +1,7 @@
+var mongoose = require('mongoose')
+
+const <%= config.title %> = mongoose.model('<%= config.title %>', { 
+    name: String 
+})
+
+module.exports = <%= config.title %>

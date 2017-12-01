@@ -9,7 +9,7 @@ const knex = require('knex')({
     }
 });
 
-class PostgresDb {
+class PostgresDB {
     constructor(table) {
         this.table = table
     }
