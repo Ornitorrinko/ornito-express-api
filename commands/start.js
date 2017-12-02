@@ -1,11 +1,7 @@
 const path = require('path')
 const inquirer = require('inquirer')
 const copyRecursively = require('ncp').ncp
-const isDirectoryEmpty = require('../helpers/is-directory-empty')
-const loadTemplate = require('../helpers/load-template')
-const createFolder = require('../helpers/create-folder')
-const copyTemplate = require('../helpers/copy-template')
-const write = require('../helpers/write')
+const { isDirectoryEmpty, loadTemplate, createFolder, copyTemplate, write } = require('../helpers')
 
 copyRecursively.limit = 16
 

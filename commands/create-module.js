@@ -1,6 +1,4 @@
-const loadTemplate = require('../helpers/load-template')
-const createFolder = require('../helpers/create-folder')
-const write = require('../helpers/write')
+const { loadTemplate, createFolder, write } = require('../helpers')
 
 function createModule(name, options) {
   let database = getDatabaseConfig(options);
@@ -27,8 +25,8 @@ function createModule(name, options) {
       write(`${destination}/modules/${name}/${name}.service.js`, service.render())
       write(`${destination}/modules/${name}/${name}.persistence.js`, persistence.render())
       write(`${destination}/modules/${name}/${name}.schema.js`, schema.render())
-      
-      if(database.isMongoDB) {
+
+      if (database.isMongoDB) {
         write(`${destination}/modules/${name}/${name}.model.js`, model.render())
       }
 
