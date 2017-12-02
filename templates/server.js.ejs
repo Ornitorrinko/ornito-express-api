@@ -5,10 +5,11 @@ const bodyParser = require('body-parser')
 const Cron = require('./backgroundTasks')
 const { verifyJWT } = require('./auth/authorization')
 const { routes, adminRoutes } = require('./router')
-<% if (config.useMongodb) { -%>
+<% if (config.enableMongoDB) { -%>
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/'<%= config.name %>, { useMongoClient: true })
+mongoose.connect('mongodb://localhost:27017/'<%= config.name %>, { useMongoClient: true })
+mongoose.Promise = global.Promise;
 <% } -%>
 
 const handler = require('ornito-route-handler')({

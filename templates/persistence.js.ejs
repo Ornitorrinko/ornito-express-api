@@ -1,3 +1,8 @@
-const PostgresDb = require('../../persistence/postgres.db')
+const <%= config.database.name %> = require('../../persistence/<%= config.database.file %>')
+<% if (config.database.isMongoDB) { -%>
+const <%= config.title %> = require('./<%= config.name %>.model')
 
-module.exports = new PostgresDb('<%= config.name %>s')
+module.exports = new <%= config.database.name %>(<%= config.title %>)
+<% } else { %>
+module.exports = new <%= config.database.name %>('<%= config.name %>s')
+<% } -%>

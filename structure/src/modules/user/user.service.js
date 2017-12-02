@@ -1,4 +1,6 @@
-const User = require('./user.model')
+const validator = require('../../helpers/validator')
+const { guid, hashify } = require('../../utils')
+const schema = require('./user.schema')
 const persistence = require('./user.persistence')
 
 const list = async (filter) => {
@@ -9,21 +11,39 @@ const getById = async (id) => {
   return await persistence.get({ id: id })
 }
 
-const create = async (body) => {
-  const user = new User(body)
-  const id = await persistence.insert(user.data)
-  return id;
+const create = async ({ login, password }) => {
+  const user = {
+    id: guid(),
+    login: login,
+    password: hashify(password)
+  }
+
+  validator
+    .validate(user)
+    .for(schema);
+
+  return await persistence.insert(user)
 }
 
-const update = async (id, body) => {
-  const found = await getById(id);
+const update = async (id, { login, password }) => {
+  const exits = await getById(id)
   
-  if(!found)
+  if(!exits)
     throw new Error('Não encontrado.')
 
-  const user = new User(found);
-  const data = user.update(body);
-  await persistence.update(id, data);
+  let user = {
+    login: login
+  }
+
+  if(password) {
+    user.password = hashify(password)
+  }
+
+  validator
+    .validate(user)
+    .for(schema)
+
+  await persistence.update(id, user)
 }
 
 const remove = async (id) => {

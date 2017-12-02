@@ -9,7 +9,7 @@ const knex = require('knex')({
     }
 });
 
-class PostgresDb {
+class PostgresDB {
     constructor(table) {
         this.table = table
     }
@@ -52,4 +52,4 @@ class PostgresDb {
     }
 }
 
-module.exports = PostgresDb;
+module.exports = PostgresDB;

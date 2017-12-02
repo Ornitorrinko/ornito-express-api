@@ -1,4 +1,6 @@
-const <%= config.title %> = require('./<%= config.name %>.model')
+const validator = require('../../helpers/validator')
+const { guid, hashify } = require('../../utils')
+const schema = require('./<%= config.name %>.schema')
 const persistence = require('./<%= config.name %>.persistence')
 
 const list = async (filter) => {
@@ -9,21 +11,36 @@ const getById = async (id) => {
   return await persistence.get({ id: id })
 }
 
-const create = async (body) => {
-  const <%= config.name %> = new <%= config.title %>(body)
-  const id = await persistence.insert(<%= config.name %>.data)
-  return id;
+const create = async ({ name }) => {
+  const <%= config.name %> = {
+    <% if(!config.database.isMongoDB) { -%>
+      id: guid(),
+    <% } -%>
+    name: name
+  }
+
+  validator
+    .validate(<%= config.name %>)
+    .for(schema);
+
+  return await persistence.insert(<%= config.name %>)
 }
 
-const update = async (id, body) => {
-  const found = await getById(id);
+const update = async (id, { name }) => {
+  const exists = await getById(id)
   
-  if(!found)
+  if(!exists)
     throw new Error('Não encontrado.')
 
-  const <%= config.name %> = new <%= config.title %>(found);
-  const data = <%= config.name %>.update(body);
-  await persistence.update(id, data);
+  let <%= config.name %> = {
+    name: name
+  }
+
+  validator
+    .validate(<%= config.name %>)
+    .for(schema)
+
+  await persistence.update(id, <%= config.name %>)
 }
 
 const remove = async (id) => {
